@@ -1,0 +1,62 @@
+{
+  "name": "zk-attendance-sdk",
+  "version": "2.1.0",
+  "description": "A powerful Node.js SDK for integrating with ZK BioMetric Fingerprint Attendance Devices for real-time attendance tracking.",
+  "main": "index.js",
+  "scripts": {
+    "test": "node tests/test.js",
+    "example:basic": "node examples/basic-usage.js",
+    "example:realtime": "node examples/realtime-logs.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jmrashed/zk-attendance-sdk.git"
+  },
+  "keywords": [
+    "zkteco",
+    "realtime",
+    "ateendance",
+    "ip",
+    "address",
+    "sdk",
+    "client",
+    "zk-attendance-sdk",
+    "zk",
+    "biometric",
+    "device",
+    "attendance",
+    "real-time",
+    "realtime",
+    "biometric attendance",
+    "biometric attendance device",
+    "fingerprint",
+    "time-tracking",
+    "employee-management"
+  ],
+  "engines": {
+    "node": ">=12.0.0"
+  },
+  "files": [
+    "index.js",
+    "src/",
+    "README.md",
+    "LICENSE"
+  ],
+  "author": "jmrashed",
+  "license": "MIT",
+  "contributors": [
+    {
+      "name": "Md Rasheduzzaman",
+      "email": "jmrashed@example.com",
+      "github": "https://github.com/jmrashed"
+    }
+  ],
+  "bugs": {
+    "url": "https://github.com/jmrashed/zk-attendance-sdk/issues"
+  },
+  "homepage": "https://github.com/jmrashed/zk-attendance-sdk#readme",
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/jmrashed"
+  }
+}
