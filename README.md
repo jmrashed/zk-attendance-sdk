@@ -69,6 +69,9 @@ main();
 |--------|-------------|
 | `createSocket()` | Establishes connection to the device |
 | `disconnect()` | Closes connection to the device |
+| `isConnected()` | Checks if device is connected |
+| `getConnectionType()` | Returns connection type (tcp/udp) |
+| `getSocketStatus()` | Returns socket status |
 
 ### User Management
 
@@ -86,6 +89,7 @@ main();
 | `getRealTimeLogs()` | `callback` | Monitors real-time attendance events |
 | `clearAttendanceLog()` | - | Clears all attendance logs |
 | `getAttendanceSize()` | - | Gets total number of attendance records |
+| `freeData()` | - | Clears transfer buffer |
 
 ### Device Information
 
@@ -102,6 +106,7 @@ main();
 | `getFaceOn()` | Gets face recognition status |
 | `getSSR()` | Gets self-service recorder status |
 | `getWorkCode()` | Gets work code configuration |
+| `getTime()` | Gets current device time |
 
 ### Device Control
 
@@ -111,6 +116,7 @@ main();
 | `disableDevice()` | Disables device operations |
 | `restart()` | Restarts the device |
 | `powerOff()` | Powers off the device |
+| `setTime()` | Sets device time |
 
 ### Time Management
 
@@ -231,6 +237,8 @@ new ZKAttendanceClient(ip, port, timeout, inport)
 - `port` (number): Device port (default: 4370)
 - `timeout` (number): Connection timeout in ms (default: 5000)
 - `inport` (number): Local UDP port for real-time events
+
+> **Busy state handling:** the client serializes device commands. If you start another request while one is still running, it raises a `ZKError` with a `[BUSY]` prefix. Wait for the current call to finish or catch the error and retry.
 
 ### Connection Types
 

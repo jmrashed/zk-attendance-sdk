@@ -2,14 +2,15 @@
   "name": "zk-attendance-sdk",
   "version": "2.1.0",
   "description": "A powerful Node.js SDK for integrating with ZK BioMetric Fingerprint Attendance Devices for real-time attendance tracking.",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsup",
-    "test": "node tests/test.js",
+    "test": "ts-node tests/test.ts",
     "format": "prettier --write \"**/*.{js,ts,json,md}\"",
     "format:check": "prettier --check \"**/*.{js,ts,json,md}\"",
-    "example:basic": "node examples/basic-usage.js",
-    "example:realtime": "node examples/realtime-logs.js"
+    "example:basic": "ts-node examples/basic-usage.ts",
+    "example:realtime": "ts-node examples/realtime-logs.ts"
   },
   "repository": {
     "type": "git",
@@ -41,8 +42,8 @@
     "pnpm": ">=10.20.0"
   },
   "files": [
-    "index.js",
-    "src/",
+    "dist/index.js",
+    "dist/",
     "README.md",
     "LICENSE"
   ],
