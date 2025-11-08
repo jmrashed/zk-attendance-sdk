@@ -15,13 +15,13 @@ Thank you for your interest in contributing to zk-attendance-sdk!
 ```bash
 git clone https://github.com/jmrashed/zk-attendance-sdk.git
 cd zk-attendance-sdk
-npm install
+pnpm install
 ```
 
 ## Testing
 
 ```bash
-npm test
+pnpm test
 ```
 
 ## Code Style
