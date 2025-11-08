@@ -26,14 +26,18 @@ npm install zk-attendance-sdk
 yarn add zk-attendance-sdk
 ```
 
+```bash
+pnpm add zk-attendance-sdk
+```
+
 ## 🚀 Quick Start
 
-```javascript
-const ZKAttendanceClient = require('zk-attendance-sdk');
+```typescript
+import ZKAttendanceClient from 'zk-attendance-sdk';
 
 const client = new ZKAttendanceClient('192.168.1.106', 4370, 5200, 5000);
 
-async function main() {
+async function main(): Promise<void> {
   try {
     // Connect to device
     await client.createSocket();
@@ -148,16 +152,18 @@ main();
 
 ### Real-time Monitoring
 
-```javascript
+```typescript
+import ZKAttendanceClient from 'zk-attendance-sdk';
+
 const client = new ZKAttendanceClient('192.168.1.106', 4370);
 
 await client.createSocket();
 
 // Listen for real-time events
-await client.getRealTimeLogs((data) => {
+await client.getRealTimeLogs(event => {
   console.log('New attendance:', {
-    userId: data.userId,
-    timestamp: data.attTime
+    userId: event.userId,
+    timestamp: event.attTime,
   });
 });
 
@@ -166,19 +172,21 @@ await client.getRealTimeLogs((data) => {
 
 ### User Management
 
-```javascript
+```typescript
+import ZKAttendanceClient from 'zk-attendance-sdk';
+
 const client = new ZKAttendanceClient('192.168.1.106', 4370);
 
 await client.createSocket();
 
 // Add a new user
 await client.setUser(
-  1,           // uid
-  'EMP001',     // userid  
-  'John Doe',   // name
-  '123456',     // password
-  0,            // role (0=user, 1=admin)
-  12345         // card number
+  1,
+  'EMP001',
+  'John Doe',
+  '123456',
+  0,
+  12345,
 );
 
 // Delete a user
@@ -189,19 +197,16 @@ await client.disconnect();
 
 ### Device Control
 
-```javascript
+```typescript
+import ZKAttendanceClient from 'zk-attendance-sdk';
+
 const client = new ZKAttendanceClient('192.168.1.106', 4370);
 
 await client.createSocket();
 
-// Check connection status
 if (client.isConnected()) {
   console.log('Connection type:', client.getConnectionType());
-  
-  // Set device time
   await client.setTime(new Date());
-  
-  // Restart device
   await client.restart();
 }
 
@@ -210,16 +215,17 @@ await client.disconnect();
 
 ### Scheduled Tasks
 
-```javascript
+```typescript
+import ZKAttendanceClient from 'zk-attendance-sdk';
+
 const client = new ZKAttendanceClient('192.168.1.106', 4370);
 
 await client.createSocket();
 
-// Set recurring task
 client.setIntervalSchedule(async () => {
   const logs = await client.getAttendances();
   console.log('Logs count:', logs.data.length);
-}, 30000); // Every 30 seconds
+}, 30000);
 
 // Clear scheduled task when done
 client.clearIntervalSchedule();
@@ -238,7 +244,7 @@ new ZKAttendanceClient(ip, port, timeout, inport)
 - `timeout` (number): Connection timeout in ms (default: 5000)
 - `inport` (number): Local UDP port for real-time events
 
-> **Busy state handling:** the client serializes device commands. If you start another request while one is still running, it raises a `ZKError` with a `[BUSY]` prefix. Wait for the current call to finish or catch the error and retry.
+> **Busy state handling:** The client serializes device commands. If you start another request while one is still running, it raises a `ZKError` with a `[BUSY]` prefix. Wait for the current call to finish or catch the error and retry.
 
 ### Connection Types
 
