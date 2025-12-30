@@ -1,9 +1,3 @@
-/*  
-    Author: Md Rasheduzzaman
-    Email:  jmrashed@example.com
-    Date: 2023-02-09
-*/
-
 import { COMMANDS, USHRT_MAX } from '../constants/command';
 import { log } from '../logs/log';
 import { decode as parseTimeToDate } from './time';

@@ -1,12 +1,12 @@
 {
   "name": "zk-attendance-sdk",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "A powerful Node.js SDK for integrating with ZK BioMetric Fingerprint Attendance Devices for real-time attendance tracking.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsup",
-    "test": "ts-node tests/test.ts",
+    "test": "jest",
     "format": "prettier --write \"**/*.{js,ts,json,md}\"",
     "format:check": "prettier --check \"**/*.{js,ts,json,md}\"",
     "example:basic": "ts-node examples/basic-usage.ts",
@@ -54,6 +54,11 @@
       "name": "Md Rasheduzzaman",
       "email": "jmrashed@example.com",
       "github": "https://github.com/jmrashed"
+    },
+    {
+      "name": "Md Israfil Miya",
+      "email": "israfilmiya120@gmail.com",
+      "github": "https://github.com/israfil-miya"
     }
   ],
   "bugs": {
@@ -66,14 +71,18 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.0",
+    "@types/jest": "^30.0.0",
     "@types/node": "^24.9.2",
     "@typescript-eslint/eslint-plugin": "^8.46.2",
     "@typescript-eslint/parser": "^8.46.2",
+    "dotenv": "^17.2.3",
     "eslint": "^9.39.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
     "globals": "^16.5.0",
+    "jest": "^30.2.0",
     "prettier": "^3.6.2",
+    "ts-jest": "^29.4.6",
     "ts-node": "^10.9.2",
     "tsup": "^8.5.0",
     "typescript": "^5.9.3",

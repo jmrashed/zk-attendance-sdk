@@ -1,8 +1,3 @@
-/*  
-    Author: Md Rasheduzzaman
-    Email:  jmrashed@example.com
-    Date: 2025-02-09
-*/
 import { COMMANDS } from './constants/command';
 import { ERROR_TYPES, ZKError } from './exceptions/handler';
 import JTCP from './helper/jtcp';
@@ -132,8 +127,6 @@ class ZKAttendanceClient {
         if (!this.jtcp.getSocketStatus()) {
           await this.jtcp.createSocket(cbErr, cbClose);
           await this.jtcp.connect();
-          // eslint-disable-next-line no-console
-          console.log('ok tcp');
         }
         this.connectionType = 'tcp';
         return;
@@ -152,8 +145,6 @@ class ZKAttendanceClient {
         if (!this.judp.getSocketStatus()) {
           await this.judp.createSocket(cbErr, cbClose);
           await this.judp.connect();
-          // eslint-disable-next-line no-console
-          console.log('ok udp');
         }
         this.connectionType = 'udp';
       } catch (err) {

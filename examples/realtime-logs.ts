@@ -4,7 +4,7 @@
     - ZK_DEVICE_IP
     - ZK_DEVICE_PORT
     - ZK_DEVICE_TIMEOUT
-    - ZK_INBOUND_PORT
+    - ZK_DEVICE_INBOUND_PORT
     - ZK_LOG_FILE
     - ZK_LOG_MAX_BYTES
 */
@@ -17,7 +17,7 @@ import ZKAttendanceClient from '../src/index';
 const DEVICE_IP = process.env.ZK_DEVICE_IP ?? '192.168.1.106';
 const DEVICE_PORT = Number(process.env.ZK_DEVICE_PORT ?? 4370);
 const SOCKET_TIMEOUT = Number(process.env.ZK_DEVICE_TIMEOUT ?? 5000);
-const INBOUND_PORT = Number(process.env.ZK_INBOUND_PORT ?? DEVICE_PORT);
+const INBOUND_PORT = Number(process.env.ZK_DEVICE_INBOUND_PORT ?? DEVICE_PORT);
 const LOG_FILE =
   process.env.ZK_LOG_FILE ??
   path.join(process.cwd(), 'logs', 'realtime-events.log');

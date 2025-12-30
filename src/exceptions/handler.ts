@@ -1,8 +1,3 @@
-/*  
-    Author: Md Rasheduzzaman
-    Email:  jmrashed@example.com
-    Date: 2023-02-09
-*/
 enum ERROR_TYPES {
   ECONNRESET = 'ECONNRESET',
   ECONNREFUSED = 'ECONNREFUSED',

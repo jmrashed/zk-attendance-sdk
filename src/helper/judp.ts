@@ -1,8 +1,3 @@
-/*  
-  Author: Md Rasheduzzaman
-  Email:  jmrashed@example.com
-  Date: 2023-02-09
-*/
 import dgram from 'node:dgram';
 import { COMMANDS, MAX_CHUNK, REQUEST_DATA } from '../constants/command';
 import { log } from '../logs/log';

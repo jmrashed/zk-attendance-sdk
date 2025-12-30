@@ -1,9 +1,3 @@
-/*  
-    Author: Md Rasheduzzaman
-    Email:  jmrashed@example.com
-    Date: 2023-02-09
-*/
-
 /**
  * ZKTeco Standalone Devices protocol command names-to-numerical IDs mapping.
  * These IDs are used for communication with ZKTeco attendance devices.

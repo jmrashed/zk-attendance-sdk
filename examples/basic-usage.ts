@@ -33,6 +33,12 @@ const basicUsage = async (): Promise<void> => {
     console.log('Connected via', client.getConnectionType());
 
     formatSection('Device Info');
+    const deviceTime = await client.getTime();
+    console.log('Device Time:', deviceTime.toString());
+    const firmwareVersion = await client.getFirmware();
+    console.log('Firmware Version:', firmwareVersion);
+    const OSVersion = await client.getOS();
+    console.log('OS Version:', OSVersion);
     const info = await client.getInfo();
     console.dir(info, { depth: null });
 

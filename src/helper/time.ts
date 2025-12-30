@@ -1,9 +1,3 @@
-/*  
-    Author: Md Rasheduzzaman
-    Email:  jmrashed@example.com
-    Date: 2023-02-09
-*/
-
 /** Decodes a numerical timestamp into a Date object. */
 export const decode = (time: number): Date => {
   const second = time % 60;

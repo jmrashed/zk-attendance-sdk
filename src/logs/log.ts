@@ -1,8 +1,3 @@
-/*  
-    Author: Md Rasheduzzaman
-    Email:  jmrashed@example.com
-    Date: 2023-02-09
-*/
 import * as fs from 'node:fs/promises';
 
 const parseCurrentTime = () => {
