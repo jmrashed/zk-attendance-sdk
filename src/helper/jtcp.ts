@@ -185,6 +185,7 @@ class JTCP {
       const socket = this.ensureSocket();
       let timer: NodeJS.Timeout | null = null;
       let replyBuffer = Buffer.alloc(0);
+      const requestTimeout = Math.max(this.timeout ?? 0, 10000);
 
       const internalCallback = (data: Buffer) => {
         socket.removeListener('data', handleOnData);
@@ -214,7 +215,7 @@ class JTCP {
         timer = setTimeout(() => {
           socket.removeListener('data', handleOnData);
           reject(new Error('TIMEOUT_ON_RECEIVING_REQUEST_DATA'));
-        }, this.timeout ?? 0);
+        }, requestTimeout);
 
         const packetLength = data.readUIntLE(4, 2);
         if (packetLength > 8) {
@@ -236,7 +237,7 @@ class JTCP {
           reject(
             new Error('TIMEOUT_IN_RECEIVING_RESPONSE_AFTER_REQUESTING_DATA'),
           );
-        }, this.timeout ?? 0);
+        }, requestTimeout);
       });
     });
   }
@@ -479,6 +480,11 @@ class JTCP {
   }
 
   async disconnect(): Promise<boolean> {
+    const socket = this.socket;
+    if (!socket || socket.destroyed) {
+      return this.closeSocket();
+    }
+
     try {
       await this.executeCmd(COMMANDS.CMD_EXIT, Buffer.alloc(0));
     } catch (err) {

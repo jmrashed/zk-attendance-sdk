@@ -185,6 +185,7 @@ class JUDP {
     return new Promise<Buffer>((resolve, reject) => {
       const socket = this.ensureSocket();
       let timer: NodeJS.Timeout | null = null;
+      const requestTimeout = Math.max(this.timeout ?? 0, 10000);
 
       const internalCallback = (data: Buffer) => {
         if (timer) {
@@ -206,7 +207,7 @@ class JUDP {
         timer = setTimeout(() => {
           socket.removeListener('message', handleOnData);
           reject(new Error('TIMEOUT_ON_RECEIVING_REQUEST_DATA'));
-        }, this.timeout ?? 0);
+        }, requestTimeout);
 
         if (data.length >= 13) {
           internalCallback(data);
@@ -227,7 +228,7 @@ class JUDP {
           reject(
             new Error('TIMEOUT_IN_RECEIVING_RESPONSE_AFTER_REQUESTING_DATA'),
           );
-        }, this.timeout ?? 0);
+        }, requestTimeout);
       });
     });
   }

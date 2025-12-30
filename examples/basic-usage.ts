@@ -8,11 +8,12 @@
 
 /* eslint-disable no-console */
 
+import 'dotenv/config';
 import ZKAttendanceClient from '../src/index';
 
 const DEVICE_IP = process.env.ZK_DEVICE_IP ?? '192.168.1.106';
 const DEVICE_PORT = Number(process.env.ZK_DEVICE_PORT ?? 4370);
-const SOCKET_TIMEOUT = Number(process.env.ZK_DEVICE_TIMEOUT ?? 5000);
+const SOCKET_TIMEOUT = Number(process.env.ZK_DEVICE_TIMEOUT ?? 15000);
 
 const formatSection = (title: string): void => {
   const line = '-'.repeat(title.length + 4);

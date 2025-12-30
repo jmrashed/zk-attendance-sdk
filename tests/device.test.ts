@@ -57,7 +57,7 @@ async function testConnectAndReadOnlyCalls() {
     const t = await client.getTime();
     expect(t).toBeInstanceOf(Date);
 
-    // getUsers is also read-only, but can be heavier; keep it optional.
+    // getUsers is also read-only, but can be heavier; so we keep it optional.
     if (process.env.ZK_DEVICE_TEST_USERS === '1') {
       const users = await client.getUsers();
       const data = (users as { data?: unknown }).data;
@@ -125,8 +125,8 @@ function shouldFilterUserBecauseNameEqualsUserId(user: unknown): boolean {
   if (!user || typeof user !== 'object') return false;
 
   const normalizeComparable = (value: string): string => {
-    // Remove common invisible/control chars that can appear from binary decoding,
-    // then normalize Unicode for stable comparisons.
+    // Removes common invisible/control chars that can appear from binary decoding,
+    // then normalizes Unicode for stable comparisons.
     const withoutControls = value
       .replace(/[\u0000-\u001F\u007F-\u009F]/g, '')
       .replace(/[\u200B-\u200D\uFEFF]/g, '')
@@ -221,25 +221,15 @@ async function testListEnrolledUsers() {
     const rows =
       effectiveLimit > 0 ? filtered.slice(0, effectiveLimit) : filtered;
 
-    // Optional debug output (off by default)
-    if (process.env.ZK_DEVICE_LIST_USERS_OUTPUT === '1') {
+    // eslint-disable-next-line no-console
+    console.log(
+      `\n📇 Enrolled users: ${filtered.length} (removed ${data.length - valid.length} invalid, removed ${valid.length - filtered.length} name==userId)`,
+    );
+
+    rows.forEach((user: unknown, index: number) => {
       // eslint-disable-next-line no-console
-      console.log(
-        `\n📇 Enrolled users: ${filtered.length} (removed ${data.length - valid.length} invalid, removed ${valid.length - filtered.length} name==userId)`,
-      );
-
-      rows.forEach((user: unknown, index: number) => {
-        // eslint-disable-next-line no-console
-        console.log(`${index + 1}. ${formatUserRow(user)}`);
-      });
-
-      if (effectiveLimit > 0 && filtered.length > effectiveLimit) {
-        // eslint-disable-next-line no-console
-        console.log(
-          `... truncated (set ZK_DEVICE_LIST_USERS_LIMIT=0 to print all)`,
-        );
-      }
-    }
+      console.log(`${index + 1}. ${formatUserRow(user)}`);
+    });
 
     expect(filtered.length).toBeGreaterThanOrEqual(0);
     expect(rows.length).toBeLessThanOrEqual(filtered.length);

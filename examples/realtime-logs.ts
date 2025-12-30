@@ -10,6 +10,7 @@
 */
 
 /* eslint-disable no-console */
+import 'dotenv/config';
 import { appendFile, mkdir, rename, stat } from 'node:fs/promises';
 import path from 'node:path';
 import ZKAttendanceClient from '../src/index';

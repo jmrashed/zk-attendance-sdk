@@ -40,14 +40,14 @@ Jest loads environment variables from `.env` automatically for tests.
 
 #### Device Integration Tests
 
-By default, tests that talk to a real ZK device are skipped.
-To enable them, set at least:
+Device tests are skipped unless enabled.
 
 ```bash
+# required
 ZK_DEVICE_IP=
 ```
 
-Optional device settings:
+Optional:
 
 ```bash
 ZK_DEVICE_PORT=
@@ -55,18 +55,17 @@ ZK_DEVICE_TIMEOUT=
 ZK_DEVICE_INBOUND_PORT=
 ```
 
-#### Listing Users Test
-
-The user listing test is opt-in and does not print anything unless output is enabled.
+#### User Checks
 
 ```bash
-# enables the test
+# Smoke-check GET_USERS (no printing)
+ZK_DEVICE_TEST_USERS=1
+
+# Print enrolled users
 ZK_DEVICE_LIST_USERS=1
-# enables printing
-ZK_DEVICE_LIST_USERS_OUTPUT=1
 ```
 
-Optional output limit (empty/0 prints all):
+Optional (empty/0 prints all):
 
 ```bash
 ZK_DEVICE_LIST_USERS_LIMIT=
