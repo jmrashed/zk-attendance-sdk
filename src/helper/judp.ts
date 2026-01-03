@@ -3,13 +3,13 @@ import { COMMANDS, MAX_CHUNK, REQUEST_DATA } from '../constants/command';
 import { log } from '../logs/log';
 import { decode as decodeDeviceTimestamp } from './time';
 import {
-  checkNotEventUDP,
   createUDPHeader,
   decodeRecordData16,
   decodeRecordRealTimeLog18,
   decodeUDPHeader,
   decodeUserData28,
   exportErrorMessage,
+  isEventUDP,
 } from './utils';
 
 type ErrorCallback = (error: Error) => void;
@@ -37,6 +37,7 @@ class JUDP {
   private socket: dgram.Socket | null = null;
   private sessionId: number | null = null;
   private replyId = 0;
+  private isRealtimeListening = false;
 
   constructor(
     private readonly ip: string,
@@ -196,7 +197,7 @@ class JUDP {
       };
 
       const handleOnData = (data: Buffer) => {
-        if (checkNotEventUDP(data)) {
+        if (isEventUDP(data)) {
           return;
         }
 
@@ -320,7 +321,7 @@ class JUDP {
           });
 
           const handleOnData = (incoming: Buffer) => {
-            if (checkNotEventUDP(incoming)) {
+            if (isEventUDP(incoming)) {
               return;
             }
 
@@ -628,15 +629,40 @@ class JUDP {
       });
     });
 
-    if (socket.listenerCount('message') < 2) {
-      socket.on('message', data => {
-        if (!checkNotEventUDP(data) || data.length !== 18) {
-          return;
-        }
-
-        cb(decodeRecordRealTimeLog18(data));
-      });
+    if (this.isRealtimeListening) {
+      return;
     }
+
+    this.isRealtimeListening = true;
+
+    const handleMessage = (data: Buffer) => {
+      if (!isEventUDP(data) || data.length < 16) {
+        return;
+      }
+
+      const header = decodeUDPHeader(data.subarray(0, 8));
+      this.sessionId = header.sessionId;
+
+      const ack = createUDPHeader(
+        COMMANDS.CMD_ACK_OK,
+        header.sessionId,
+        header.replyId,
+        Buffer.alloc(4),
+      );
+
+      socket.send(ack, 0, ack.length, this.port, this.ip, err => {
+        if (err) {
+          log(`[UDP][ACK_EVENT] ${err.message}`);
+        }
+      });
+
+      cb(decodeRecordRealTimeLog18(data));
+    };
+
+    socket.on('message', handleMessage);
+    socket.once('close', () => {
+      this.isRealtimeListening = false;
+    });
   }
 
   getSocketStatus(): boolean {

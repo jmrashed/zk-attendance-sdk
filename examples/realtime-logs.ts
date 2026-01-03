@@ -110,17 +110,18 @@ const main = async (): Promise<void> => {
     console.log('Listening for real-time logs on', DEVICE_IP);
 
     await client.getRealTimeLogs(async (log: RealTimeLog) => {
-      const printableTime =
-        log.attTime instanceof Date
-          ? log.attTime.toISOString()
-          : String(log.attTime);
-      console.log(
-        `Real-time event -> user: ${log.userId ?? 'unknown'}, time: ${printableTime}`,
-      );
-      await appendEvent({
-        userId: log.userId,
-        timestamp: log.attTime,
-      });
+      try {
+        const printableTime =
+          log.attTime instanceof Date
+            ? log.attTime.toISOString()
+            : String(log.attTime);
+        console.log(
+          `Real-time event -> user: ${log.userId ?? 'unknown'}, time: ${printableTime}`,
+        );
+        await appendEvent({ userId: log.userId, timestamp: log.attTime });
+      } catch (err) {
+        console.error('Real-time handler failed:', err);
+      }
     });
 
     console.log('Press Ctrl+C to stop');

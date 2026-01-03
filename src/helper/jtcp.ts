@@ -3,13 +3,13 @@ import { COMMANDS, MAX_CHUNK, REQUEST_DATA } from '../constants/command';
 import { log } from '../logs/log';
 import { decode as decodeDeviceTimestamp } from './time';
 import {
-  checkNotEventTCP,
   createTCPHeader,
   decodeRecordData40,
   decodeRecordRealTimeLog52,
   decodeTCPHeader,
   decodeUserData72,
   exportErrorMessage,
+  isEventTCP,
   removeTcpHeader,
 } from './utils';
 
@@ -38,6 +38,7 @@ class JTCP {
   private sessionId: number | null = null;
   private replyId = 0;
   private socket: net.Socket | null = null;
+  private isRealtimeListening = false;
 
   constructor(
     private readonly ip: string,
@@ -197,7 +198,7 @@ class JTCP {
 
       const handleOnData = (data: Buffer) => {
         replyBuffer = Buffer.concat([replyBuffer, data]);
-        if (checkNotEventTCP(data)) return;
+        if (isEventTCP(data)) return;
 
         if (timer) {
           clearTimeout(timer);
@@ -323,7 +324,7 @@ class JTCP {
           };
 
           const handleOnData = (incoming: Buffer) => {
-            if (checkNotEventTCP(incoming)) {
+            if (isEventTCP(incoming)) {
               return;
             }
 
@@ -649,14 +650,51 @@ class JTCP {
       });
     });
 
-    if (socket.listenerCount('data') === 0) {
-      socket.on('data', data => {
-        if (!checkNotEventTCP(data) || data.length <= 16) {
-          return;
-        }
-        cb(decodeRecordRealTimeLog52(data));
-      });
+    if (this.isRealtimeListening) {
+      return;
     }
+
+    this.isRealtimeListening = true;
+    let tcpBuffer = Buffer.alloc(0);
+
+    const handleData = (incoming: Buffer) => {
+      tcpBuffer = Buffer.concat([tcpBuffer, incoming]);
+
+      while (tcpBuffer.length >= 8) {
+        const payloadLength = tcpBuffer.readUInt16LE(4);
+        const frameLength = 8 + payloadLength;
+
+        if (tcpBuffer.length < frameLength) {
+          break;
+        }
+
+        const frame = tcpBuffer.subarray(0, frameLength);
+        tcpBuffer = tcpBuffer.subarray(frameLength);
+
+        if (frame.length < 16 || !isEventTCP(frame)) {
+          continue;
+        }
+
+        const header = decodeTCPHeader(frame.subarray(0, 16));
+        this.sessionId = header.sessionId;
+
+        const ack = createTCPHeader(
+          COMMANDS.CMD_ACK_OK,
+          header.sessionId,
+          header.replyId,
+          Buffer.alloc(4),
+        );
+        socket.write(ack);
+
+        cb(decodeRecordRealTimeLog52(frame));
+      }
+    };
+
+    socket.on('data', handleData);
+    socket.once('close', () => {
+      this.isRealtimeListening = false;
+      tcpBuffer = Buffer.alloc(0);
+    });
   }
 
   getSocketStatus(): boolean {

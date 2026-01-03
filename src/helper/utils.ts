@@ -222,21 +222,28 @@ export const exportErrorMessage = (commandValue: number) => {
   return 'AN UNKNOWN ERROR';
 };
 
-/** Checks if the TCP data is not an event. */
-export const checkNotEventTCP = (data: Buffer) => {
+/** Returns true when the TCP buffer contains a real-time event packet. */
+export const isEventTCP = (data: Buffer): boolean => {
   try {
-    data = removeTcpHeader(data);
-    const commandId = data.readUIntLE(0, 2);
-    const event = data.readUIntLE(4, 2);
-    return event === COMMANDS.EF_ATTLOG && commandId === COMMANDS.CMD_REG_EVENT;
+    const payload = removeTcpHeader(data);
+    if (payload.length < 2) return false;
+
+    const commandId = payload.readUInt16LE(0);
+    return commandId === COMMANDS.CMD_REG_EVENT;
   } catch (err) {
-    log(`[228] : ${String(err)} ,${data.toString('hex')} `);
+    log(`[EVENT_DETECT_TCP] ${String(err)} ,${data.toString('hex')}`);
     return false;
   }
 };
 
-/** Checks if the UDP data is not an event. */
-export const checkNotEventUDP = (data: Buffer) => {
-  const commandId = decodeUDPHeader(data.subarray(0, 8)).commandId;
-  return commandId === COMMANDS.CMD_REG_EVENT;
+/** Returns true when the UDP buffer contains a real-time event packet. */
+export const isEventUDP = (data: Buffer): boolean => {
+  if (data.length < 8) return false;
+  try {
+    const commandId = decodeUDPHeader(data.subarray(0, 8)).commandId;
+    return commandId === COMMANDS.CMD_REG_EVENT;
+  } catch (err) {
+    log(`[EVENT_DETECT_UDP] ${String(err)} ,${data.toString('hex')}`);
+    return false;
+  }
 };
