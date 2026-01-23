@@ -239,10 +239,12 @@ client.clearIntervalSchedule();
 new ZKAttendanceClient(ip, port, timeout, inport)
 ```
 
-- `ip` (string): Device IP address
-- `port` (number): Device port (default: 4370)
-- `timeout` (number): Connection timeout in ms (default: 5000)
-- `inport` (number): Local UDP port for real-time events
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `ip` | string | - | Device IP address (required) |
+| `port` | number | `4370` | Device port |
+| `timeout` | number | `5000` | Connection timeout in milliseconds |
+| `inport` | number | Same as `port` | Local UDP port for receiving real-time events |
 
 > **Busy state handling:** The client serializes device commands. If you start another request while one is still running, it raises a `ZKError` with a `[BUSY]` prefix. Wait for the current call to finish or catch the error and retry.
 
