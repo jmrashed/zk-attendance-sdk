@@ -9,6 +9,7 @@
     "test": "jest",
     "format": "prettier --write \"**/*.{js,ts,json,md}\"",
     "format:check": "prettier --check \"**/*.{js,ts,json,md}\"",
+    "lint": "eslint \"src/**/*.ts\" \"tests/**/*.ts\"",
     "example:basic": "ts-node examples/basic-usage.ts",
     "example:realtime": "ts-node examples/realtime-logs.ts"
   },
@@ -52,7 +53,7 @@
   "contributors": [
     {
       "name": "Md Rasheduzzaman",
-      "email": "jmrashed@example.com",
+      "email": "jmrashed@gmail.com",
       "github": "https://github.com/jmrashed"
     },
     {
