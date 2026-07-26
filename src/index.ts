@@ -5,6 +5,8 @@ import JUDP from './helper/judp';
 import { encode as encodeDeviceTimestamp } from './helper/time';
 import { noopLogger, type ZKLogger } from './logger';
 
+export * from './types';
+
 type ConnectionType = 'tcp' | 'udp' | null;
 type SocketErrorCallback = (error: Error) => void;
 type SocketCloseCallback = (protocol: 'tcp' | 'udp') => void;
