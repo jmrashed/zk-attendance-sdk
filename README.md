@@ -257,6 +257,32 @@ const connectionType = client.getConnectionType(); // 'tcp' or 'udp'
 const isConnected = client.isConnected(); // true/false
 ```
 
+## 🔥 Troubleshooting
+
+### Can't connect to the device / firewall issues
+
+1. **Check device IP & port**
+   - The device needs a *local* IP (e.g. `192.168.1.106`) and the default port is **4370**.
+   - Test on the same LAN/Wi-Fi first — if your machine and the device share a network, the SDK should connect without extra configuration.
+
+2. **Check router firewall / port blocking**
+   - Routers sometimes block the device port (4370). Open it in the router firewall.
+   - Give the device a **static IP** so it doesn't change.
+
+3. **Port forwarding (for remote/global access)**
+   - On the router, forward `PublicIP:4370 → DeviceLocalIP:4370`.
+   - This only works if your network has a real **public IP** — if your ISP only gives a private/CGNAT IP, port forwarding won't work and you'll need a VPN or tunnel instead.
+
+Common causes of connection failures: wrong IP/port, router blocking the port, a dynamic device IP that changed, or an ISP that doesn't provide a public IP.
+
+### Accessing a device behind a client's LAN (SaaS use case)
+
+If the device sits inside a client's office network and your app runs in the cloud, you have three options:
+
+- **Port forwarding + public IP** — simplest, but only works if the client has a real public IP, and exposing the raw device port is insecure.
+- **VPN / tunnel (recommended)** — use a tunnel (e.g. Cloudflare Tunnel, ngrok) to expose a small local server that talks to the device via this SDK, and access it through a subdomain like `zk.mydomain.com`. This works even without a public IP and lets you add IP restrictions and authentication (e.g. JWT) in front of the device.
+- **Device "push" mode (if supported)** — some ZKTeco models can push attendance data to your server, avoiding inbound connections entirely.
+
 ## 🤝 Contributing
 
 Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING.md) for details.
@@ -282,4 +308,4 @@ If this project helped you, please give it a ⭐ on [GitHub](https://github.com/
 ---
 
 **Author:** [Md Rasheduzzaman](https://github.com/jmrashed)  
-**Email:** jmrashed@example.com
+**Email:** jmrashed@gmail.com

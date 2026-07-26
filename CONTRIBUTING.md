@@ -77,6 +77,17 @@ ZK_DEVICE_LIST_USERS_LIMIT=
 - Follow existing code patterns
 - Add comments for complex logic
 
+Before opening a PR, run:
+
+```bash
+pnpm format:check
+pnpm lint
+pnpm test
+pnpm build
+```
+
+These same checks run in CI and must pass before a PR can be merged.
+
 ## Reporting Issues
 
 Please use the GitHub issue tracker to report bugs or request features.
