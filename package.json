@@ -3,7 +3,15 @@
   "version": "2.2.1",
   "description": "A powerful Node.js SDK for integrating with ZK BioMetric Fingerprint Attendance Devices for real-time attendance tracking.",
   "main": "dist/index.js",
+  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
   "scripts": {
     "build": "tsup",
     "test": "jest",
@@ -39,7 +47,7 @@
     "employee-management"
   ],
   "engines": {
-    "node": ">=12.0.0",
+    "node": ">=18.0.0",
     "pnpm": ">=10.20.0"
   },
   "files": [
