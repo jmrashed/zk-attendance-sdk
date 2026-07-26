@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.2.1] - 2026-07-26
+### Fixed
+- Fixed the release workflow: build `dist/` before publishing and skip
+  pnpm's git-branch check, which failed on the detached HEAD checked
+  out for release-triggered runs.
+- Pinned CI pnpm version to 10 to match the `package.json` engines
+  requirement.
+
 ## [2.2.0] - 2026-01-23
 ### Changed
 - Improved constructor parameter documentation in the README.
