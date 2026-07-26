@@ -173,7 +173,7 @@ export const decodeRecordData16 = (recordData: Buffer) => {
 
 /** Decodes real-time log record from an 18-byte buffer. */
 export const decodeRecordRealTimeLog18 = (recordData: Buffer) => {
-  const userId = recordData.readUIntLE(8, 1);
+  const userId = recordData.readUIntLE(8, 4);
   const attTime = parseHexToTime(recordData.subarray(12, 18));
   return { userId, attTime };
 };
