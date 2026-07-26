@@ -5,7 +5,7 @@ import {
   MAX_CHUNK,
   REQUEST_DATA,
 } from '../constants/command';
-import { log } from '../logs/log';
+import { noopLogger, type ZKLogger } from '../logger';
 import { decode as decodeDeviceTimestamp } from './time';
 import {
   createUDPHeader,
@@ -49,6 +49,7 @@ class JUDP {
     private readonly port: number,
     private readonly timeout: number | undefined,
     private readonly inboundPort: number,
+    private readonly logger: ZKLogger = noopLogger,
   ) {}
 
   createSocket(
@@ -211,7 +212,7 @@ class JUDP {
       };
 
       const handleOnData = (data: Buffer) => {
-        if (isEventUDP(data)) {
+        if (isEventUDP(data, this.logger)) {
           return;
         }
 
@@ -263,7 +264,7 @@ class JUDP {
     const socket = this.ensureSocket();
     socket.send(buffer, 0, buffer.length, this.port, this.ip, err => {
       if (err) {
-        log(`[UDP][SEND_CHUNK_REQUEST] ${err.toString()}`);
+        this.logger.error(`[UDP][SEND_CHUNK_REQUEST] ${err.toString()}`);
       }
     });
   }
@@ -335,7 +336,7 @@ class JUDP {
           });
 
           const handleOnData = (incoming: Buffer) => {
-            if (isEventUDP(incoming)) {
+            if (isEventUDP(incoming, this.logger)) {
               return;
             }
 
@@ -508,7 +509,7 @@ class JUDP {
     try {
       await this.executeCmd(COMMANDS.CMD_EXIT, Buffer.alloc(0));
     } catch (err) {
-      log(
+      this.logger.error(
         `[UDP][DISCONNECT] ${err instanceof Error ? err.message : String(err)}`,
       );
     }
@@ -650,7 +651,7 @@ class JUDP {
     this.isRealtimeListening = true;
 
     const handleMessage = (data: Buffer) => {
-      if (!isEventUDP(data) || data.length < 16) {
+      if (!isEventUDP(data, this.logger) || data.length < 16) {
         return;
       }
 
@@ -666,7 +667,7 @@ class JUDP {
 
       socket.send(ack, 0, ack.length, this.port, this.ip, err => {
         if (err) {
-          log(`[UDP][ACK_EVENT] ${err.message}`);
+          this.logger.error(`[UDP][ACK_EVENT] ${err.message}`);
         }
       });
 

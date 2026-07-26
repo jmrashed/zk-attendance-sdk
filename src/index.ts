@@ -3,6 +3,7 @@ import { ERROR_TYPES, ZKError } from './exceptions/handler';
 import JTCP from './helper/jtcp';
 import JUDP from './helper/judp';
 import { encode as encodeDeviceTimestamp } from './helper/time';
+import { noopLogger, type ZKLogger } from './logger';
 
 type ConnectionType = 'tcp' | 'udp' | null;
 type SocketErrorCallback = (error: Error) => void;
@@ -28,10 +29,17 @@ class ZKAttendanceClient {
     private readonly port: number = 4370,
     private readonly timeout: number = 5000,
     inboundPort?: number,
+    logger: ZKLogger = noopLogger,
   ) {
     const resolvedInboundPort = inboundPort ?? this.port;
-    this.jtcp = new JTCP(this.ip, this.port, this.timeout);
-    this.judp = new JUDP(this.ip, this.port, this.timeout, resolvedInboundPort);
+    this.jtcp = new JTCP(this.ip, this.port, this.timeout, logger);
+    this.judp = new JUDP(
+      this.ip,
+      this.port,
+      this.timeout,
+      resolvedInboundPort,
+      logger,
+    );
   }
 
   private isErrnoException(err: unknown): err is NodeJS.ErrnoException {
@@ -443,5 +451,8 @@ class ZKAttendanceClient {
     );
   }
 }
+
+export { noopLogger, fileLogger } from './logger';
+export type { ZKLogger } from './logger';
 
 export default ZKAttendanceClient;

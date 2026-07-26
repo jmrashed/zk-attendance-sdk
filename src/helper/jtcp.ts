@@ -5,7 +5,7 @@ import {
   MAX_CHUNK,
   REQUEST_DATA,
 } from '../constants/command';
-import { log } from '../logs/log';
+import { noopLogger, type ZKLogger } from '../logger';
 import { decode as decodeDeviceTimestamp } from './time';
 import {
   createTCPHeader,
@@ -49,6 +49,7 @@ class JTCP {
     private readonly ip: string,
     private readonly port: number,
     private readonly timeout?: number,
+    private readonly logger: ZKLogger = noopLogger,
   ) {}
 
   createSocket(
@@ -213,7 +214,7 @@ class JTCP {
 
       const handleOnData = (data: Buffer) => {
         replyBuffer = Buffer.concat([replyBuffer, data]);
-        if (isEventTCP(data)) return;
+        if (isEventTCP(data, this.logger)) return;
 
         if (timer) {
           clearTimeout(timer);
@@ -273,7 +274,7 @@ class JTCP {
     const socket = this.ensureSocket();
     socket.write(buffer, err => {
       if (err) {
-        log(`[TCP][SEND_CHUNK_REQUEST] ${err.toString()}`);
+        this.logger.error(`[TCP][SEND_CHUNK_REQUEST] ${err.toString()}`);
       }
     });
   }
@@ -339,7 +340,7 @@ class JTCP {
           };
 
           const handleOnData = (incoming: Buffer) => {
-            if (isEventTCP(incoming)) {
+            if (isEventTCP(incoming, this.logger)) {
               return;
             }
 
@@ -505,7 +506,7 @@ class JTCP {
       await this.executeCmd(COMMANDS.CMD_EXIT, Buffer.alloc(0));
     } catch (err) {
       // Best effort disconnect; ignore command failure but log for traceability.
-      log(
+      this.logger.error(
         `[TCP][DISCONNECT] ${err instanceof Error ? err.message : String(err)}`,
       );
     }
@@ -686,7 +687,7 @@ class JTCP {
         const frame = tcpBuffer.subarray(0, frameLength);
         tcpBuffer = tcpBuffer.subarray(frameLength);
 
-        if (frame.length < 16 || !isEventTCP(frame)) {
+        if (frame.length < 16 || !isEventTCP(frame, this.logger)) {
           continue;
         }
 

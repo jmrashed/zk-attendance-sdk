@@ -1,5 +1,5 @@
 import { COMMANDS, USHRT_MAX } from '../constants/command';
-import { log } from '../logs/log';
+import { noopLogger, type ZKLogger } from '../logger';
 import { decode as parseTimeToDate } from './time';
 
 /** Parses a 6-byte hex buffer into a Date object. */
@@ -223,7 +223,10 @@ export const exportErrorMessage = (commandValue: number) => {
 };
 
 /** Returns true when the TCP buffer contains a real-time event packet. */
-export const isEventTCP = (data: Buffer): boolean => {
+export const isEventTCP = (
+  data: Buffer,
+  logger: ZKLogger = noopLogger,
+): boolean => {
   try {
     const payload = removeTcpHeader(data);
     if (payload.length < 2) return false;
@@ -231,19 +234,22 @@ export const isEventTCP = (data: Buffer): boolean => {
     const commandId = payload.readUInt16LE(0);
     return commandId === COMMANDS.CMD_REG_EVENT;
   } catch (err) {
-    log(`[EVENT_DETECT_TCP] ${String(err)} ,${data.toString('hex')}`);
+    logger.error(`[EVENT_DETECT_TCP] ${String(err)} ,${data.toString('hex')}`);
     return false;
   }
 };
 
 /** Returns true when the UDP buffer contains a real-time event packet. */
-export const isEventUDP = (data: Buffer): boolean => {
+export const isEventUDP = (
+  data: Buffer,
+  logger: ZKLogger = noopLogger,
+): boolean => {
   if (data.length < 8) return false;
   try {
     const commandId = decodeUDPHeader(data.subarray(0, 8)).commandId;
     return commandId === COMMANDS.CMD_REG_EVENT;
   } catch (err) {
-    log(`[EVENT_DETECT_UDP] ${String(err)} ,${data.toString('hex')}`);
+    logger.error(`[EVENT_DETECT_UDP] ${String(err)} ,${data.toString('hex')}`);
     return false;
   }
 };
