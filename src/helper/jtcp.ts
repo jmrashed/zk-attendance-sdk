@@ -1,5 +1,10 @@
 import net from 'node:net';
-import { COMMANDS, MAX_CHUNK, REQUEST_DATA } from '../constants/command';
+import {
+  COMMANDS,
+  ERROR_ACK_COMMAND_IDS,
+  MAX_CHUNK,
+  REQUEST_DATA,
+} from '../constants/command';
 import { log } from '../logs/log';
 import { decode as decodeDeviceTimestamp } from './time';
 import {
@@ -132,6 +137,16 @@ class JTCP {
         );
 
         const sanitizedReply = removeTcpHeader(reply);
+
+        if (sanitizedReply.length >= 2) {
+          const replyCommandId = sanitizedReply.readUInt16LE(0);
+          if (ERROR_ACK_COMMAND_IDS.has(replyCommandId)) {
+            throw new Error(
+              `Device rejected command ${exportErrorMessage(command)}: ${exportErrorMessage(replyCommandId)}`,
+            );
+          }
+        }
+
         if (sanitizedReply.length && command === COMMANDS.CMD_CONNECT) {
           this.sessionId = sanitizedReply.readUInt16LE(4);
         }

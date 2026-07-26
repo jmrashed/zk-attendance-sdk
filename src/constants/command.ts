@@ -103,6 +103,20 @@ export const USHRT_MAX = 65535;
 
 export const MAX_CHUNK = 65472;
 
+/**
+ * Reply command IDs that unambiguously indicate the device rejected a
+ * command. Excludes CMD_ACK_RETRY/CMD_ACK_REPEAT since those aren't hard
+ * failures.
+ */
+export const ERROR_ACK_COMMAND_IDS = new Set<number>([
+  COMMANDS.CMD_ACK_ERROR,
+  COMMANDS.CMD_ACK_UNAUTH,
+  COMMANDS.CMD_ACK_UNKNOWN,
+  COMMANDS.CMD_ACK_ERROR_CMD,
+  COMMANDS.CMD_ACK_ERROR_INIT,
+  COMMANDS.CMD_ACK_ERROR_DATA,
+]);
+
 export const REQUEST_DATA = {
   DISABLE_DEVICE: Buffer.from([0, 0, 0, 0]),
   GET_REAL_TIME_EVENT: Buffer.from([0x01, 0x00, 0x00, 0x00]),
