@@ -248,6 +248,30 @@ new ZKAttendanceClient(ip, port, timeout, inport)
 
 > **Busy state handling:** The client serializes device commands. If you start another request while one is still running, it raises a `ZKError` with a `[BUSY]` prefix. Wait for the current call to finish or catch the error and retry.
 
+### Logging
+
+By default, the SDK does not write any logs or files. Pass a 5th
+constructor argument to route internal warnings/errors to your own
+logger:
+
+```typescript
+import ZKAttendanceClient, { fileLogger } from 'zk-attendance-sdk';
+
+const client = new ZKAttendanceClient(
+  '192.168.1.106',
+  4370,
+  5000,
+  undefined,
+  {
+    warn: msg => console.warn(msg),
+    error: msg => console.error(msg),
+  },
+);
+```
+
+To restore the pre-2.3.0 behavior of appending errors to a dated local
+`.err.log` file, pass the exported `fileLogger` instead of a custom object.
+
 ### Connection Types
 
 The SDK automatically attempts TCP connection first, then falls back to UDP if TCP fails. You can check the active connection type:
